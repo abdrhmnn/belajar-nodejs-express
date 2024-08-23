@@ -1,0 +1,4 @@
+by default Jest tidak support testing di express js, maka pakai library tambahan seperti supertest
+
+by default jika membuat middleware di express maka setiap request yg masuk itu akan di handle dlu didalam
+middleware baru setelah itu akan diteruskan ke router
