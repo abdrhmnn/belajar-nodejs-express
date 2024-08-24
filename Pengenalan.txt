@@ -2,3 +2,10 @@ by default Jest tidak support testing di express js, maka pakai library tambahan
 
 by default jika membuat middleware di express maka setiap request yg masuk itu akan di handle dlu didalam
 middleware baru setelah itu akan diteruskan ke router
+
+middleware di express ada 5:
+- application level middleware
+- route level middleware
+- error handling middleware
+- built-in middleware
+- third party middleware

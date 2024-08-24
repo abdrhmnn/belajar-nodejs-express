@@ -25,10 +25,17 @@ const middlewareTiga = (req, res, next) => {
 }
 
 const app = express()
-// pakai middleware
+// pakai middleware (application level middleware)
+// atau middleware dibawah ini akan dijalankan di semua route path
 app.use(middlewareSatu)
 app.use(middlewareDua)
 app.use(middlewareTiga)
+
+// kalo mau menjalankan middleware di route tertentu
+app.use("/eunha", (req, res, next) => {
+  console.info(`Received request from /eunha: ${req.method} ${req.originalUrl}`)
+  next()
+})
 
 app.get("/", (req, res) => {
   console.info(`Time now: ${req.requestTime.getTime().toString()}`)
@@ -43,4 +50,22 @@ test("test middleware", async () => {
 test("test gagal middleware", async () => {
   const response = await request(app).get("/")
   expect(response.status).toBe(404)
+})
+
+// middleware untuk membaca request body yg dikirim
+app.use(express.json()) // konversi request body menjadi json
+app.post("/sowon", (req, res) => {
+  const name = req.body.name
+  res.json({ name: `Hello ${name}` })
+})
+
+test("test request body", async () => {
+  const response = await request(app).post("/sowon").send({ name: "abdu" })
+  expect(response.body).toEqual({ name: "Hello abdu" })
+})
+
+// middleware 404
+// jadi middleware ini akan dijalankan ketika tidak ada route yg bs diakses
+app.use((req, res, next) => {
+  res.status(404).send("404 not found!")
 })

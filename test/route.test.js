@@ -30,6 +30,7 @@ test("route match with parameter", async () => {
 const router = express.Router()
 
 // didalam router ini bs melakukan hal yg sama seperti sebelumnya
+// router-level middleware
 router.use((req, res, next) => {
   console.info(`Received request: ${req.method} ${req.originalUrl}`)
   next()
@@ -39,9 +40,26 @@ router.get("/", (req, res) => {
   res.send(`Hello ${req.query.name}`)
 })
 
+// klo mau middleware nya dijalankan khusus di route tertentu maka
+router.use("/abdu", (req, res, next) => {
+  console.info(`Received request from /abdu: ${req.method} ${req.originalUrl}`)
+  next()
+})
+
+router.get("/abdu", (req, res) => {
+  res.send(`Hello ${req.query.name}`)
+})
+
 test("test grouping route", async () => {
   app.use(router) // jgn lupa ketika menggunakan group route sblm di test itu hrs di use dlu di dlm app
 
   const response = await request(app).get("/").query({ name: "abdu" })
   expect(response.text).toBe("Hello abdu")
+})
+
+test("test middleware route", async () => {
+  app.use(router)
+
+  const response = await request(app).get("/abdu").query({ name: "eunha" })
+  expect(response.text).toBe("Hello eunha")
 })
